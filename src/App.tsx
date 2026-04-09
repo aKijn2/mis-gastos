@@ -33,6 +33,10 @@ type SummaryCard = {
   tone?: 'income' | 'expense' | 'neutral'
 }
 
+type StoredSessionShape = {
+  transactions?: Transaction[]
+}
+
 const STORAGE_KEY = 'mis-gastos.transactions'
 const LANGUAGE_STORAGE_KEY = 'mis-gastos.language'
 
@@ -434,6 +438,43 @@ function groupMonthlyTotals(transactions: Transaction[]) {
     .sort((left, right) => left.month.localeCompare(right.month))
 }
 
+function isTransactionLike(value: unknown): value is Transaction {
+  if (!value || typeof value !== 'object') {
+    return false
+  }
+
+  const candidate = value as Partial<Transaction>
+
+  return (
+    typeof candidate.id === 'string' &&
+    typeof candidate.date === 'string' &&
+    typeof candidate.description === 'string' &&
+    typeof candidate.amount === 'number' &&
+    (candidate.type === 'income' || candidate.type === 'expense') &&
+    typeof candidate.category === 'string' &&
+    typeof candidate.source === 'string'
+  )
+}
+
+function restoreStoredTransactions(raw: string) {
+  const parsed = JSON.parse(raw) as Transaction[] | StoredSessionShape | unknown
+
+  if (Array.isArray(parsed) && parsed.every(isTransactionLike)) {
+    return parsed
+  }
+
+  if (
+    parsed &&
+    typeof parsed === 'object' &&
+    Array.isArray((parsed as StoredSessionShape).transactions) &&
+    (parsed as StoredSessionShape).transactions?.every(isTransactionLike)
+  ) {
+    return (parsed as StoredSessionShape).transactions ?? []
+  }
+
+  return null
+}
+
 function App() {
   const [language, setLanguage] = useState<Language>(getInitialLanguage)
   const [transactions, setTransactions] = useState<Transaction[]>([])
@@ -458,8 +499,17 @@ function App() {
     }
 
     try {
-      setTransactions(JSON.parse(saved) as Transaction[])
+      const restoredTransactions = restoreStoredTransactions(saved)
+
+      if (restoredTransactions) {
+        setTransactions(restoredTransactions)
+        return
+      }
+
+      window.localStorage.removeItem(STORAGE_KEY)
+      setTransactions(parseTransactions(sampleCsv, 'sample.csv'))
     } catch {
+      window.localStorage.removeItem(STORAGE_KEY)
       setTransactions(parseTransactions(sampleCsv, 'sample.csv'))
     }
   }, [])
@@ -490,8 +540,8 @@ function App() {
 
   useEffect(() => {
     const updateActiveSection = () => {
-      const sectionElements = navSections
-        .map((section) => document.getElementById(section.id))
+      const sectionElements = navSectionIds
+        .map((sectionId) => document.getElementById(sectionId))
         .filter((section): section is HTMLElement => section !== null)
 
       if (!sectionElements.length) {
