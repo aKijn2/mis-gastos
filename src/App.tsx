@@ -579,6 +579,10 @@ function App() {
     return right.date.localeCompare(left.date)
   })
 
+  const visibleExpenseTotal = filteredTransactions
+    .filter((transaction) => transaction.type === 'expense')
+    .reduce((total, transaction) => total + Math.abs(transaction.amount), 0)
+
   const currentMonthKey = toMonthKey(formatDateKey(referenceDate))
   const previousMonthDate = new Date(referenceDate.getFullYear(), referenceDate.getMonth() - 1, 1)
   const previousMonthKey = toMonthKey(formatDateKey(previousMonthDate))
@@ -884,6 +888,7 @@ function App() {
           <div className="comparison-grid">
             <div className="comparison-card">
               <span>{formatMonthKey(currentMonthKey, locale)}</span>
+              <small className="comparison-kicker">{t.compare.netResult}</small>
               <strong>{formatCurrency(currentMonthTotals.income - currentMonthTotals.expense, locale)}</strong>
               <p>
                 {t.compare.incomeExpense(
@@ -891,6 +896,7 @@ function App() {
                   formatCurrency(currentMonthTotals.expense, locale),
                 )}
               </p>
+              <small className="comparison-note">{t.compare.netHint}</small>
               <small className="comparison-trend">
                 {currentMonthTotals.income >= currentMonthTotals.expense
                   ? t.compare.positive
@@ -899,6 +905,7 @@ function App() {
             </div>
             <div className="comparison-card muted">
               <span>{formatMonthKey(previousMonthKey, locale)}</span>
+              <small className="comparison-kicker">{t.compare.netResult}</small>
               <strong>
                 {formatCurrency(previousMonthTotals.income - previousMonthTotals.expense, locale)}
               </strong>
@@ -908,6 +915,7 @@ function App() {
                   formatCurrency(previousMonthTotals.expense, locale),
                 )}
               </p>
+              <small className="comparison-note">{t.compare.netHint}</small>
               <small className="comparison-trend">
                 {previousMonthTotals.income >= previousMonthTotals.expense
                   ? t.compare.positive
@@ -1113,6 +1121,10 @@ function App() {
                 ))}
               </tbody>
             </table>
+            <div className="table-summary">
+              <span>{t.table.visibleExpenseTotal}</span>
+              <strong>{formatCurrency(visibleExpenseTotal, locale)}</strong>
+            </div>
           </div>
         ) : (
           <p className="empty-state">{t.table.empty}</p>

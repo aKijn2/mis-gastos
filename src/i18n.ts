@@ -93,6 +93,8 @@ export const messages = {
     },
     compare: {
       incomeExpense: (income: string, expense: string) => `Ingresos ${income} / Gastos ${expense}`,
+      netResult: 'Resultado neto',
+      netHint: 'Ingresos menos gastos de este mes. No es el saldo de la cuenta.',
       positive: 'Mes positivo',
       negative: 'Mes con mas gasto que ingreso',
       legendIncome: 'Ingresos',
@@ -136,6 +138,7 @@ export const messages = {
     },
     table: {
       visibleCount: (count: number) => `${count} visibles`,
+      visibleExpenseTotal: 'Total gastado visible',
       date: 'Fecha',
       concept: 'Concepto',
       type: 'Tipo',
@@ -241,6 +244,8 @@ export const messages = {
     },
     compare: {
       incomeExpense: (income: string, expense: string) => `Income ${income} / Expenses ${expense}`,
+      netResult: 'Net result',
+      netHint: 'Income minus expenses for this month. This is not the account balance.',
       positive: 'Positive month',
       negative: 'More spending than income',
       legendIncome: 'Income',
@@ -284,6 +289,7 @@ export const messages = {
     },
     table: {
       visibleCount: (count: number) => `${count} visible`,
+      visibleExpenseTotal: 'Visible spending total',
       date: 'Date',
       concept: 'Concept',
       type: 'Type',

@@ -222,6 +222,22 @@
   font-size: 0.98rem;
 }
 
+.comparison-kicker {
+  display: block;
+  margin-top: 8px;
+  color: #8b6138;
+  font-size: 0.88rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.comparison-note {
+  display: block;
+  margin-top: 8px;
+  color: #7b6b58;
+  line-height: 1.45;
+}
+
 .upload-card,
 .panel,
 .summary-card {
@@ -769,6 +785,22 @@ td {
 .empty-state {
   margin: 0;
   color: #6c655d;
+}
+
+.table-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(112, 85, 51, 0.12);
+  color: #6a5845;
+}
+
+.table-summary strong {
+  color: #9d4528;
+  font-size: 1.2rem;
 }
 
 code {
